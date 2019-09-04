@@ -1783,6 +1783,20 @@ static const ShellConfig shell_cfg1 =
     commands
 };
 
+static const ShellConfig shell_cfg2 =
+{
+    (BaseSequentialStream *)&SD1,
+    commands
+};
+
+static const SerialConfig serial_cfg =
+{
+    115200, /* speed */
+    0, /* cr1 */
+    USART_CR2_STOP1_BITS, /* cr2 */
+    0 /* cr3 */
+};
+
 static const I2CConfig i2ccfg = {
   0x00300506, //voodoo magic 400kHz @ HSI 8MHz
   0,
@@ -1863,6 +1877,10 @@ int main(void)
   i2sStart(&I2SD2, &i2sconfig);
   i2sStartExchange(&I2SD2);
 
+  sdStart(&SD1, &serial_cfg);
+  palSetPadMode(GPIOA, 9, PAL_MODE_ALTERNATE(1));       /* USART1 TX.       */
+  palSetPadMode(GPIOA, 10, PAL_MODE_ALTERNATE(1));      /* USART1 RX.       */
+
   ui_init();
 
   /*
@@ -1873,14 +1891,21 @@ int main(void)
     chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
 
     while (1) {
+      chThdSleepMilliseconds(1000);
+
       if (SDU1.config->usbp->state == USB_ACTIVE) {
+        chprintf((BaseSequentialStream*)&SD1, "run usb shell\r\n");
         thread_t *shelltp = chThdCreateStatic(waThread2, sizeof(waThread2), 
                                               NORMALPRIO + 1,
                                               shellThread, (void *)&shell_cfg1);
         chThdWait(shelltp);               /* Waiting termination.             */
+      } else {
+        /* (re)run serial shell */
+        thread_t *serialshelltp = chThdCreateStatic(waThread2, sizeof(waThread2), 
+                NORMALPRIO + 1,
+                shellThread, (void *)&shell_cfg2);
+        chThdWait(serialshelltp);
       }
-
-      chThdSleepMilliseconds(1000);
     }
 }
 
