@@ -1791,7 +1791,7 @@ static const ShellConfig shell_cfg2 =
 
 static const SerialConfig serial_cfg =
 {
-    115200, /* speed */
+    57600, /* speed */
     0, /* cr1 */
     USART_CR2_STOP1_BITS, /* cr2 */
     0 /* cr3 */
