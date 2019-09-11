@@ -228,8 +228,43 @@ static void cmd_time(BaseSequentialStream *chp, int argc, char *argv[])
     RTCDateTime timespec;
     (void)argc;
     (void)argv;
+
     rtcGetTime(&RTCD1, &timespec);
-    chprintf(chp, "%d/%d/%d %d\r\n", timespec.year+1980, timespec.month, timespec.day, timespec.millisecond);
+
+    if (argc == 0) {
+        int32_t second = timespec.millisecond / 1000;
+        uint8_t hour   = second / (60 * 60);
+        second -= hour * 60 * 60;
+        uint8_t minute = second / 60;
+        second -= minute * 60;
+
+        chprintf(chp, "%02d-%02d-%02d %02d:%02d:%02d.%04d (day of week=%d)\r\n", 
+                timespec.year+1980, 
+                timespec.month, 
+                timespec.day, 
+                hour, 
+                minute, 
+                second, 
+                timespec.millisecond % 1000,
+                timespec.dayofweek
+        );
+    } else {
+        if (argc == 4) {
+            timespec.year = atoi(argv[0])-1980;
+            timespec.month = atoi(argv[1]);
+            timespec.day = atoi(argv[2]);
+            timespec.dayofweek = atoi(argv[3]);
+            rtcSetTime(&RTCD1, &timespec);
+        } else if (argc == 3) {
+            timespec.millisecond = (atoi(argv[0]) * 60 * 60 + atoi(argv[1]) * 60 + atoi(argv[2])) * 1000;
+            rtcSetTime(&RTCD1, &timespec);
+        } else {
+            chprintf(chp, "usage: time {year} {month} {day} {dayofweek(1=monday...7=sunday)}\r\n");
+            chprintf(chp, "usage: time {hour} {min} {sec}\r\n");
+            return;
+        }
+    }
+
 }
 
 
