@@ -12,10 +12,17 @@ NanoVNA - Very tiny handheld Vector Network Analyzer
 
 # About
 
-NanoVNA is very tiny handheld Vector Network Analyzer (VNA). It is
-standalone with lcd display, portable device with battery. This
-project aim to provide an RF gadget but useful instrument for
-enthusiast.
+NanoVNA is very tiny handheld Vector Network Analyzer (VNA),designed by edy555, it is a very portable but high-performance vector network analyzer. It is standalone with lcd display, portable device with battery.
+
+
+Edy555 put his software at https://github.com/ttrftech/NanoVNA
+View this link to get the original design documentation for edy555.
+
+You can make or purchase a finished NanoVNA at a low cost. NanoVNA is now the most active vector network analyzer and antenna analyzer project in the community. Usually buying a finished NanoVNA-H is the most convenient way to get NanoVNA.
+
+Edy555 is updating his software, harmonic extensions have been added, usually a well-made NanoVNA can be acquired better than 40dB dynamics at 900MHz . After community discussions, the improved NanoVNA-H can still have 40dB dynamics up to 1.5GHz. Thanks to the excellent performance of the improved NanoVNA-H , edy555 has increased the frequency limit of his 0.7.0 firmware to 2.7GHz, but users should be aware of the uncertainty measured above 1.5GHz.
+
+Cho45 adds TDR (Time Domain Reflectometer) functionality to the NanoVNA. Time domain measurements are widely required by the community to quickly measure the length of the coaxial cable and determine the cable fault point by calculating the discontinuous impedance.
 
 This repository contains source of NanoVNA firmware.
 
